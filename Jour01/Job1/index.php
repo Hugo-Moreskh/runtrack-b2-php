@@ -9,7 +9,7 @@ function my_str_search(string $haystack, string $needle): int
       $count++;
     }
   }
-  echo $count;
+  return $count;
 }
 $haystack = 'La Plateforme';
 $needle = 'a';
