@@ -2,7 +2,18 @@
 
 $pdo = new PDO("mysql:host=localhost;dbname=lp_official", 'root', '');
 
-function find_all_students(): array {};
+function find_all_students(): array
+{
+
+  global $pdo;
+  $query = "SELECT * FROM student";
+
+  $stmt = $pdo->prepare($query);
+  $stmt->execute();
+
+  return $stmt->fetchAll(PDO::FETCH_ASSOC);
+};
+$students = find_all_students();
 
 
 ?>
@@ -16,8 +27,34 @@ function find_all_students(): array {};
   <title>job1</title>
 </head>
 
-<body>
 
+<body>
+  <h1>Tableau des étudiants</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <?php if (!empty($students)): ?>
+          <?php foreach (array_keys($students[0]) as $column) : ?>
+            <th>
+              <?php echo htmlspecialchars($column); ?>
+            </th>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($students as $student): ?>
+        <tr>
+          <?php foreach ($student as $value): ?>
+            <td><?php echo htmlspecialchars($value); ?></td>
+          <?php endforeach; ?>
+
+        </tr>
+      <?php endforeach; ?>
+
+    </tbody>
+  </table>
 </body>
 
 </html>
