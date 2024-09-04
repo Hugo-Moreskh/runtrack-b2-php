@@ -1,48 +1,44 @@
 <?php
 
-try {
-  $pdo = new PDO("mysql:host=localhost;dbname=lp_official", 'root', '');
-  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-  die("Erreur de connexion : " . $e->getMessage());
-}
 
-function insert_student(string $email, string $fullname, string $gender, DateTime $birthdate, int $gradeId): void
+
+function insert_student(string $email, string $fullname, string $gender, DateTime $birthdate, int $grade_Id): void
 {
-
   global $pdo;
   try {
-    // Préparation de la requête SQL pour insérer l'étudiant
-    $query = "INSERT INTO student (email, fullname, gender, birthdate, grade_id) VALUES (:email, :fullname, :gender, :birthdate, :grade_id)";
-    $stmt = $pdo->prepare($query);
-
-    // Liaison des paramètres pour sécuriser la requête contre les injections SQL
-    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-    $stmt->bindValue(':fullname', $fullname, PDO::PARAM_STR);
-    $stmt->bindValue(':gender', $gender, PDO::PARAM_STR);
-    $stmt->bindValue(':birthdate', $birthdate, PDO::PARAM_STR);
-    $stmt->bindValue(':grade_id', $gradeId, PDO::PARAM_INT);
-
-    // Exécution de la requête
-    $stmt->execute();
-    echo "<p>Étudiant inséré avec succès !</p>";
+    $pdo = new PDO("mysql:host=localhost;dbname=lp_official", 'root', '');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   } catch (PDOException $e) {
-    echo "<p>Erreur lors de l'insertion : " . $e->getMessage() . "</p>";
+    die("Erreur de connexion : " . $e->getMessage());
   }
-  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupérer les valeurs des champs du formulaire
-    $email = $_POST['input-email'] ?? '';
-    $fullname = $_POST['input-fullname'] ?? '';
-    $gender = $_POST['input-gender'] ?? '';
-    $birthdate = $_POST['input-birthdate'] ?? '';
-    $grade_id = $_POST['input-grade_id'] ?? 0;
 
-    // Appeler la fonction pour insérer l'étudiant si tous les champs sont remplis
-    if (!empty($email) && !empty($fullname) && !empty($gender) && !empty($birthdate) && !empty($grade_id)) {
-      insert_student($email, $fullname, $gender, $birthdate, $grade_id);
-    } else {
-      echo "<p>Veuillez remplir tous les champs.</p>";
-    }
+
+
+  $stmt = $pdo->prepare("INSERT INTO student (email, fullname, gender, birthdate, grade_id) VALUES (:email, :fullname, :gender, :birthdate, :grade_id)");
+
+  $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+  $stmt->bindValue(':fullname', $fullname, PDO::PARAM_STR);
+  $stmt->bindValue(':gender', $gender, PDO::PARAM_STR);
+  $stmt->bindValue(':birthdate', $birthdate->format('Y-m-d'), PDO::PARAM_STR);
+  $stmt->bindValue(':grade_id', $grade_Id, PDO::PARAM_INT);
+
+
+  $stmt->execute();
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  echo 'salutttt';
+  $email = $_POST['input-email'] ?? '';
+  $fullname = $_POST['input-fullname'] ?? '';
+  $gender = $_POST['input-gender'] ?? '';
+  $birthdate = new DateTime($_POST['input-birthdate']) ?? '';
+  $grade_id = $_POST['input-grade_id'] ?? 0;
+
+
+  if (!empty($email) && !empty($fullname) && !empty($gender) && !empty($birthdate) && !empty($grade_id)) {
+    echo 'salut';
+    insert_student($email, $fullname, $gender, $birthdate, $grade_id);
+  } else {
+    echo "Veuillez remplir tous les champs.";
   }
 }
 ?>
@@ -59,7 +55,7 @@ function insert_student(string $email, string $fullname, string $gender, DateTim
 <body>
   <h1>Insertion d'un nouvel étudiant</h1>
 
-  <!-- Formulaire pour insérer un nouvel étudiant -->
+
   <form method="post" action="index.php">
     <label for="email">Email:</label>
     <input type="email" id="email" name="input-email" placeholder="Entrez l'email" required>
