@@ -26,7 +26,7 @@ function insert_student(string $email, string $fullname, string $gender, DateTim
   $stmt->execute();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  echo 'salutttt';
+
   $email = $_POST['input-email'] ?? '';
   $fullname = $_POST['input-fullname'] ?? '';
   $gender = $_POST['input-gender'] ?? '';
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
   if (!empty($email) && !empty($fullname) && !empty($gender) && !empty($birthdate) && !empty($grade_id)) {
-    echo 'salut';
+
     insert_student($email, $fullname, $gender, $birthdate, $grade_id);
   } else {
     echo "Veuillez remplir tous les champs.";
