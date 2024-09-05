@@ -1,11 +1,11 @@
 <?php
 
-$pdo = new PDO("mysql:host=localhost;dbname=lp_official", 'root', '');
+global $pdo;
 
 function find_all_students_grade(): array
 {
+  $pdo = new PDO("mysql:host=localhost;dbname=lp_official", 'root', '');
 
-  global $pdo;
   $stmt = $pdo->prepare("SELECT student.*, grade.name AS grade_name FROM student JOIN grade ON student.grade_id= grade.id");
 
   $stmt->execute();
